@@ -25,6 +25,10 @@ func SetVerbose(v bool) {
 // Run runs a goose command.
 func Run(command string, db *sql.DB, dir string, args ...string) error {
 	switch command {
+	case "apply":
+		if err := Apply(db, dir); err != nil {
+			return err
+		}
 	case "up":
 		if err := Up(db, dir); err != nil {
 			return err
@@ -83,6 +87,13 @@ func Run(command string, db *sql.DB, dir string, args ...string) error {
 		}
 	case "reset":
 		if err := Reset(db, dir); err != nil {
+			return err
+		}
+	case "refresh":
+		if err := Reset(db, dir); err != nil {
+			return err
+		}
+		if err := Apply(db, dir); err != nil {
 			return err
 		}
 	case "status":

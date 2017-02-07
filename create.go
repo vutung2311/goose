@@ -89,3 +89,37 @@ func down{{.CamelName}}(tx *sql.Tx) error {
 	return nil
 }
 `))
+
+var gormGoMigrationTemplate = template.Must(template.New("goose.gorm-migration").Parse(`package main
+
+import (
+	"database/sql"
+
+    "github.com/jinzhu/gorm"
+    "github.com/pressly/goose"
+)
+
+func init() {
+    goose.AddMigration(Up_{{.}}, Down_{{.}})
+}
+
+func Up_{{.}}(tx *sql.Tx) error {
+	gormTx, err := gorm.Open("", tx)
+	if err != nil {
+		return err
+	}
+	return func(tx *gorm.DB) error {
+    	return nil
+	}(gormTx)
+}
+
+func Down_{{.}}(tx *sql.Tx) error {
+	gormTx, err := gorm.Open("", tx)
+	if err != nil {
+		return err
+	}
+	return func(tx *gorm.DB) error {
+    	return nil
+	}(gormTx)
+}
+`))
